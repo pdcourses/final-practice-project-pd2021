@@ -19,7 +19,7 @@ contestRouter.get(
 );
 
 contestRouter.get(
-  "/getContestById",
+  "/:contestId",
   checkToken.checkToken,
   basicMiddlewares.canGetContest,
   contestController.getContestById
