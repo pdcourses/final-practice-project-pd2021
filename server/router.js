@@ -7,74 +7,35 @@ const checkToken = require('../middlewares/checkToken');
 const validators = require('../middlewares/validators');
 const chatController = require('../controllers/chatController');
 const upload = require('../utils/fileUpload');
+
+const contestRouter = require('./routes/contestRouter');
+
 const router = express.Router();
 
+//authRouter
 router.post(
   '/registration',
   validators.validateRegistrationData,
   hashPass,
   userController.registration,
 );
-
 router.post(
   '/login',
   validators.validateLogin,
   userController.login,
 );
 
-router.post(
-  '/dataForContest',
-  checkToken.checkToken,
-  contestController.dataForContest,
-);
+//contestRouter
+router.use('/contests', contestRouter);
+
+
+
+// userRouter
 
 router.post(
-  '/pay',
-  checkToken.checkToken,
-  basicMiddlewares.onlyForCustomer,
-  upload.uploadContestFiles,
-  basicMiddlewares.parseBody,
-  validators.validateContestCreation,
-  userController.payment,
-);
-
-router.post(
-  '/getCustomersContests',
-  checkToken.checkToken,
-  contestController.getCustomersContests,
-);
-
-router.get(
-  '/getContestById',
-  checkToken.checkToken,
-  basicMiddlewares.canGetContest,
-  contestController.getContestById,
-);
-
-router.post(
-  '/getAllContests',
-  checkToken.checkToken,
-  basicMiddlewares.onlyForCreative,
-  contestController.getContests,
-);
-
-router.post(
-  '/getUser',
-  checkToken.checkAuth,
-);
-
-router.get(
-  '/downloadFile/:fileName',
-  checkToken.checkToken,
-  contestController.downloadFile,
-);
-
-router.post(
-  '/updateContest',
-  checkToken.checkToken,
-  upload.updateContestFile,
-  contestController.updateContest,
-);
+    '/getUser',
+    checkToken.checkAuth,
+  );
 
 router.post(
   '/setNewOffer',
@@ -105,12 +66,36 @@ router.post(
   userController.updateUser,
 );
 
+router.get(
+    '/downloadFile/:fileName',
+    checkToken.checkToken,
+    contestController.downloadFile,
+  );
+
+
+//payRouter
+
 router.post(
-  '/cashout',
-  checkToken.checkToken,
-  basicMiddlewares.onlyForCreative,
-  userController.cashout,
-);
+    '/cashout',
+    checkToken.checkToken,
+    basicMiddlewares.onlyForCreative,
+    userController.cashout,
+  );
+
+  router.post(
+    '/pay',
+    checkToken.checkToken,
+    basicMiddlewares.onlyForCustomer,
+    upload.uploadContestFiles,
+    basicMiddlewares.parseBody,
+    validators.validateContestCreation,
+    userController.payment,
+  );
+
+
+
+
+//chatRouter
 
 router.post(
   '/newMessage',
