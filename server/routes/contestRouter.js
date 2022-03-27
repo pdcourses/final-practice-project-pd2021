@@ -13,7 +13,7 @@ contestRouter.post(
 );
 
 contestRouter.get(
-  "/",
+  "/customers",
   checkToken.checkToken,
   contestController.getCustomersContests
 );
@@ -25,8 +25,8 @@ contestRouter.get(
   contestController.getContestById
 );
 
-contestRouter.post(
-  "/getAllContests",
+contestRouter.get(
+  "/",
   checkToken.checkToken,
   basicMiddlewares.onlyForCreative,
   contestController.getContests
