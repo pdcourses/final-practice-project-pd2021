@@ -1,6 +1,4 @@
-const Conversation = require('../models/mongoModels/conversation');
-const Message = require('../models/mongoModels/Message');
-const Catalog = require('../models/mongoModels/Catalog');
+const {Conversation, Message, Catalog} = require('../db/models/mongoModels');
 const moment = require('moment');
 const db = require('../models');
 const userQueries = require('./queries/userQueries');
@@ -87,12 +85,12 @@ module.exports.getChat = async (req, res, next) => {
       { $sort: { createdAt: 1 } },
       {
         $project: {
-          '_id': 1,
-          'sender': 1,
-          'body': 1,
-          'conversation': 1,
-          'createdAt': 1,
-          'updatedAt': 1,
+          _id: 1,
+          sender: 1,
+          body: 1,
+          conversation: 1,
+          createdAt: 1,
+          updatedAt: 1,
         },
       },
     ]);
