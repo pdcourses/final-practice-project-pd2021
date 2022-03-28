@@ -1,13 +1,15 @@
-
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('Users', {
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER,
-    },
+  class User extends Model{
+    static associate({Contest, Offer, Rating, RefreshToken}){
+      User.hasMany(Offer, { foreignKey: 'userId'});
+      User.hasMany(Contest, { foreignKey: 'userId'});
+      User.hasMany(Rating, { foreignKey: 'userId'});
+      User.hasMany(RefreshToken, { foreignKey: 'userId'});
+    }
+  }
+  User.init({
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -57,9 +59,12 @@ module.exports = (sequelize, DataTypes) => {
     },
   },
   {
-    timestamps: false,
+    sequelize,
+    modelName: "User",
   });
-
+  return User;
+}
+/*
   User.associate = function (models) {
     User.hasMany(models.Order, { foreignKey: 'user_id', targetKey: 'id' });
   };
@@ -80,3 +85,4 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
+*/
