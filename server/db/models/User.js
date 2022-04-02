@@ -2,11 +2,11 @@ const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model{
-    static associate({Contest, Offer, Rating, RefreshToken}){
+    static associate({Contest, Offer, Rating, Token}){
       User.hasMany(Offer, { foreignKey: 'userId'});
       User.hasMany(Contest, { foreignKey: 'userId'});
       User.hasMany(Rating, { foreignKey: 'userId'});
-      User.hasMany(RefreshToken, { foreignKey: 'userId'});
+      User.hasMany(Token, { foreignKey: 'userId'});
     }
   }
   User.init({
