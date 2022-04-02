@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const CONSTANTS = require("../constants");
-const bd = require("../db/models");
-const { Sequelize, sequelize, Banks, Contests } = require("../db/models");
+const { Sequelize, sequelize, Banks, Contests, Ratings, Offers} = require("../db/models");
 const NotUniqueEmail = require("../errors/NotUniqueEmail");
 const moment = require("moment");
 const { v4: uuid } = require("uuid");
@@ -88,16 +87,16 @@ module.exports.changeMark = async (req, res, next) => {
   const { isFirst, offerId, mark, creatorId } = req.body;
   const userId = req.tokenData.userId;
   try {
-    transaction = await bd.sequelize.transaction({
+    transaction = await sequelize.transaction({
       isolationLevel:
-        bd.Sequelize.Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
+        Sequelize.Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
     });
     const query = getQuery(offerId, userId, mark, isFirst, transaction);
     await query();
-    const offersArray = await bd.Ratings.findAll({
+    const offersArray = await Ratings.findAll({
       include: [
         {
-          model: bd.Offers,
+          model: Offers,
           required: true,
           where: { userId: creatorId },
         },
@@ -120,7 +119,7 @@ module.exports.changeMark = async (req, res, next) => {
 };
 
 module.exports.payment = async (req, res, next) => {
-  const transaction = await bd.sequelize.transaction();
+  const transaction = await sequelize.transaction();
   try {
     const {
       body: { cvc, expiry, price, number, contests},
@@ -204,15 +203,15 @@ module.exports.updateUser = async (req, res, next) => {
 module.exports.cashout = async (req, res, next) => {
   let transaction;
   try {
-    transaction = await bd.sequelize.transaction();
+    transaction = await sequelize.transaction();
     const updatedUser = await userQueries.updateUser(
-      { balance: bd.sequelize.literal("balance - " + req.body.sum) },
+      { balance: sequelize.literal("balance - " + req.body.sum) },
       req.tokenData.userId,
       transaction
     );
     await bankQueries.updateBankBalance(
       {
-        balance: bd.sequelize.literal(`CASE 
+        balance: sequelize.literal(`CASE 
                 WHEN "cardNumber"='${req.body.number.replace(
                   / /g,
                   ""
@@ -231,7 +230,7 @@ module.exports.cashout = async (req, res, next) => {
       },
       {
         cardNumber: {
-          [bd.Sequelize.Op.in]: [
+          [Sequelize.Op.in]: [
             CONSTANTS.SQUADHELP_BANK_NUMBER,
             req.body.number.replace(/ /g, ""),
           ],
