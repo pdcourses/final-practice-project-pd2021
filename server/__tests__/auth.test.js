@@ -1,35 +1,40 @@
-/*
-метод тестирование
-2 параметра
-- название теста
-- метод expect, в который помещается 
-функция.... которую тестируем
-*/
+const request = require('supertest');
+const {sequelize, User} = require('../db/models');
 
-function sum(a,b) {
-    if(typeof a !== 'number' || typeof b !== 'number'){
-        throw new TypeError();
-    }
-    return (a+b);
-}
+const {createApp} = require('../app');
+const app = createApp();
 
-test('Sum 2+2 equal 4', () => {
-    expect(sum(2,2)).toBe(4);
+const yup = require('yup');
+
+const testUser = {
+    firstName: `Test${Date.now()}`,
+    lastName:  `Surname${Date.now()}`,
+    displayName: `DName${Date.now()}`,
+    email: `test${Date.now()}@email.com`,
+    password: 'qwerty',
+    role: 'customer',
+};
+
+beforeAll( () => User.create(testUser));
+afterAll( () => sequelize.close());
+
+const authBodySchema = yup.object({
+    data: yup.object({
+        user: yup.object().required(),
+        tokenPair: yup.object({
+            accessToken: yup.string().required(),
+            refreshToken: yup.string().required(),
+        }).required()
+    })
+}).required();
+
+describe('LOGIN', () => {
+    test('User must login successfully', async () => {
+        const {status , body} = await (await request(app).post('/api/login')).setEncoding({
+            email: testUser.email,
+            password: testUser.password,
+        }); 
+        expect(status).toBe(201);
+        expect(await authBodySchema.isValid(body)).toBe(true);
+    });
 });
-
-test('Sum "2":string + "2":string equal 4:number', () => {
-    expect( () => sum('2','2')).toThrow(TypeError);
-});
-
-/*
-test('Sum NaN + some value equal NaN', () => {
-    expect(sum(NaN, 1)).toBe(NaN);
-    expect(sum(NaN, '1')).toBe(NaN);
-    expect(sum(NaN, 'hello')).toBe(NaN);
-    expect(sum(NaN, true)).toBe(NaN);
-    expect(sum(NaN, false)).toBe(NaN);
-    expect(sum(NaN, {})).toBe(NaN);
-    expect(sum(NaN, {name: 'Vasya', age: 20})).toBe(NaN);
-    expect(sum(NaN, [1,2,3])).toBe(NaN);
-});
-*/

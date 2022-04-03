@@ -11,11 +11,13 @@
   },
   "test": {
     "username": "postgres",
-    "password": "admin",
+    "password": "postgres",
     "database": "todo-test",
     "host": "localhost",
     "dialect": "postgres",
-    "operatorsAliases": "Op"
+    "operatorsAliases": "Op",
+    "migrationStorage": "json",
+    "seederStorage": "json"
   },
   "production": {
     "username": "postgres",

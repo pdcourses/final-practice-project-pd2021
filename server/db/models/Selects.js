@@ -1,7 +1,9 @@
-
+"use strict";
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  const SelectBox = sequelize.define('Selects', {
+  class Select extends Model {}
+  Select.init({
     type: {
       allowNull: false,
       primaryKey: true,
@@ -14,8 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   },
   {
-    timestamps: false,
+    sequelize,
+    modelName: "Select",
   });
 
-  return SelectBox;
+  return Select;
 };

@@ -1,13 +1,17 @@
-
-
+"use strict";
+const {Model} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  const Contest = sequelize.define('Contests', {
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER,
-    },
+  class Contest extends Model{
+    static associate({User, Offer}){
+      Contest.belongsTo(User, {
+        foreignKey: "userId",
+      });
+      Contest.hasMany(Offer, {
+        foreignKey: "contestId",
+      });
+    }
+  }
+  Contest.init({
     orderId: {
       allowNull: false,
       type: DataTypes.STRING,
@@ -86,7 +90,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   },
   {
-    timestamps: false,
+    sequelize,
+    modelName: "Contest",
   });
 
   return Contest;

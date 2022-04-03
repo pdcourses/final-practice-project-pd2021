@@ -1,13 +1,22 @@
-
+"use strict";
+const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  const Offer = sequelize.define('Offers', {
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER,
-    },
+  class Offer extends Model {
+    static associate({User, Contest, Rating}){
+      Offer.belongsTo(User, {
+        foreignKey: "userId"
+      });
+      Offer.belongsTo(Contest, {
+        foreignKey: "contestId"
+      });
+      Offer.hasOne(Rating, {
+        foreignKey: "offerId",
+      });
+    }
+  }
+  Offer.init(
+    {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -36,17 +45,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   },
   {
-    timestamps: false,
+    sequelize,
+    modelName: "Offer",
   });
-
-  Offer.associate = function (models) {
-    Offer.belongsTo(models.User, { foreignKey: 'user_id', sourceKey: 'id' });
-  };
-
-  Offer.associate = function (models) {
-    Offer.belongsTo(models.Contest,
-      { foreignKey: 'contest_id', sourceKey: 'id' });
-  };
-
   return Offer;
 };
