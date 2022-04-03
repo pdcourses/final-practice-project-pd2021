@@ -37,4 +37,11 @@ describe('LOGIN', () => {
         expect(status).toBe(201);
         expect(await authBodySchema.isValid(body)).toBe(true);
     });
+    test('User login error with status 403', async () => {
+        const {status , body} = await (await request(app).post('/api/login')).setEncoding({
+            email: 'testemail@gmail.com',
+            password: 'qwerty',
+        }); 
+        expect(status).toBe(403);
+    })
 });
