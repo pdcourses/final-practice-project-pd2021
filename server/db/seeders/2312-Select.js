@@ -1,6 +1,7 @@
+"use strict";
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('Selects', [
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkInsert('Selects', [
       {
         type: 'typeOfName',
         describe: 'Company',
@@ -143,5 +144,8 @@ module.exports = {
         describe: 'Builders',
       },
     ], {});
+  },
+  down: async (ueryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('Selects', null, {});
   },
 };

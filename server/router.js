@@ -10,9 +10,15 @@ const upload = require('../utils/fileUpload');
 
 const contestRouter = require('./routes/contestRouter');
 
+const authRouter = require('./routes/auth');
+
 const router = express.Router();
 
 //authRouter
+
+router.use('/auth', authRouter);
+
+/*
 router.post(
   '/registration',
   validators.validateRegistrationData,
@@ -24,6 +30,7 @@ router.post(
   validators.validateLogin,
   userController.login,
 );
+*/
 
 //contestRouter
 router.use('/contests', contestRouter);
