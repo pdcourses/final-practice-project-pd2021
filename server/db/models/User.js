@@ -1,7 +1,11 @@
+const { compare } = require("bcrypt");
 const {Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model{
+    checkPassword(value){
+      return compare(value, this.getDataValue("password"));
+    }
     static associate({Contest, Offer, Rating, Token}){
       User.hasMany(Offer, { foreignKey: 'userId'});
       User.hasMany(Contest, { foreignKey: 'userId'});
