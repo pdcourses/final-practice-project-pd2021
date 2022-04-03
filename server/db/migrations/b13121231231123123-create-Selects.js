@@ -1,7 +1,7 @@
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Selects', {
+  up: async(queryInterface, Sequelize) => {
+    await queryInterface.createTable('Selects', {
       type: {
         allowNull: false,
         primaryKey: true,
@@ -12,9 +12,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING,
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
     });
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Selects');
+  down: async(queryInterface, Sequelize) => {
+    await queryInterface.dropTable('Selects');
   },
 };
