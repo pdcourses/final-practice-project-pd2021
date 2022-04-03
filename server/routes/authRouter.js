@@ -1,3 +1,5 @@
+// api/auth/sign-in
+
 const authRouter = require("express");
 const AuthController = require("./../controllers/authController");
 authRouter.post("/sign-in", AuthController.signInUser);
